@@ -95,7 +95,7 @@ i=0
 while [ $i -le $requests ];
 do
 	curr=0
-	echo "Success $i of $requests requests with options:"
+	alreadyshown=0
 	while IFS= read -r cmd || [ -n "$cmd" ];
 	do
 		curr=$(( $curr + 1 ))
@@ -113,6 +113,14 @@ do
 
 		if [ "$arr" -eq "$i" ]
 		then
+			# show it only once and if cms is present for $i
+			if [ "$alreadyshown" = 0 ]
+			then
+				alreadyshown=1
+				echo ""
+				echo "Success $i of $requests requests with options:"
+			fi
+			
 			if [ "$i" -ge "$finecmd" ]
 			then
 				if [ "$i" -ge "$goodcmd" ]
@@ -127,27 +135,8 @@ do
 			fi
 		fi
 
-
-#		if [ "$1" -ge "$finecmd" ]
-#		then
-#			if [ "$1" -ge "$goodcmd" ]
-#			then
-#				echo "OK $1 of $requests requests with options:"
-#				echo -e "\033[0;32m$cmd\033[0m"
-#			else
-#				# success >= 75%
-#				echo "OK $1 of $requests requests with options:"
-#				echo -e "\033[0;33m$cmd\033[0m"
-#		else
-#			echo "OK $1 of $requests requests with options:"
-#			echo "$cmd"
-#			fi
-#		fi
-#		echo ""
-#		shift
 	done < $cmds_filename
 	i=$(( $i + 1 ))
-	echo ""
 done
 
 
